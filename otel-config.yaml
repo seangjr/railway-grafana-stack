@@ -1,0 +1,40 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+
+exporters:
+  # Tempo for traces
+  otlp/tempo:
+    endpoint: ${env:TEMPO_ENDPOINT:-http://tempo:4317}
+    tls:
+      insecure: true
+  
+  # Prometheus for metrics
+  prometheusremotewrite:
+    endpoint: ${env:PROMETHEUS_ENDPOINT:-http://prometheus:9090/api/v1/write}
+  
+  # Loki for logs
+  loki:
+    endpoint: ${env:LOKI_ENDPOINT:-http://loki:3100/loki/api/v1/push}
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/tempo]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheusremotewrite]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [loki]
