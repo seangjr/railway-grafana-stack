@@ -1,0 +1,21 @@
+{
+    "$schema": "https://railway.com/railway.schema.json",
+    "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "/prometheus/dockerfile"
+    },
+    "deploy": {
+        "runtime": "V2",
+        "numReplicas": 1,
+        "startCommand": "prometheus --config.file=/etc/prometheus/prom.yml --storage.tsdb.path=/prometheus --web.enable-remote-write-receiver",
+        "healthcheckPath": "/-/healthy",
+        "sleepApplication": false,
+        "multiRegionConfig": {
+            "us-east4-eqdc4a": {
+                "numReplicas": 1
+            }
+        },
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+    }
+}
