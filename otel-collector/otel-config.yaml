@@ -8,6 +8,15 @@ receivers:
 
 processors:
   batch:
+  
+  # Transform resource attributes for Prometheus labels
+  resource:
+    attributes:
+      - key: job
+        action: delete
+      - key: service
+        action: upsert
+        from_attribute: service.name
 
 exporters:
   # Tempo for traces
@@ -19,6 +28,8 @@ exporters:
   # Prometheus for metrics
   prometheusremotewrite:
     endpoint: ${env:PROMETHEUS_ENDPOINT:-http://prometheus:9090/api/v1/write}
+    resource_to_telemetry_conversion:
+      enabled: true
   
   # Loki for logs
   loki:
@@ -32,7 +43,7 @@ service:
       exporters: [otlp/tempo]
     metrics:
       receivers: [otlp]
-      processors: [batch]
+      processors: [batch, resource]
       exporters: [prometheusremotewrite]
     logs:
       receivers: [otlp]
