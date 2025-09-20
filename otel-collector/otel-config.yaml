@@ -31,11 +31,9 @@ exporters:
     resource_to_telemetry_conversion:
       enabled: true
   
-  # Loki for logs
-  otlp/loki:
-    endpoint: ${env:LOKI_ENDPOINT:-http://loki:3100/otlp/v1/logs}
-    tls:
-      insecure: true
+  # File exporter for logs (to be processed by promtail)
+  file:
+    path: /tmp/otel-logs.json
 
 service:
   pipelines:
@@ -50,4 +48,4 @@ service:
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/loki]
+      exporters: [file]
