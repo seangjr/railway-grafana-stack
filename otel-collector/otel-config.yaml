@@ -31,11 +31,9 @@ exporters:
     resource_to_telemetry_conversion:
       enabled: true
   
-  # Loki for logs via OTLP
-  otlp/loki:
-    endpoint: ${env:LOKI_OTLP_ENDPOINT:-http://loki:9095}
-    tls:
-      insecure: true
+  # Loki for logs
+  loki:
+    endpoint: ${env:LOKI_ENDPOINT:-http://loki:3100/loki/api/v1/push}
 
 service:
   pipelines:
@@ -50,4 +48,4 @@ service:
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/loki]
+      exporters: [loki]
