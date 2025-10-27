@@ -5,10 +5,8 @@ server:
   grpc_listen_port: 9095
   log_level: info
 
-distributor:
-  otlp:
-    protocols:
-      http:
+limits_config:
+  allow_structured_metadata: true
 
 common:
   ring:
