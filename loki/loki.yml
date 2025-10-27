@@ -9,7 +9,6 @@ distributor:
   otlp:
     protocols:
       http:
-        endpoint: 0.0.0.0:3100
 
 common:
   ring:
