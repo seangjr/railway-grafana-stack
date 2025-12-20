@@ -1,6 +1,14 @@
 # Self-Hosted Observability Stack
 
-A complete, production-ready observability stack using OpenTelemetry, Grafana, Prometheus, Loki, and Tempo. This stack provides unified monitoring for logs, traces, and metrics from your applications.
+A complete observability stack using OpenTelemetry, Grafana, Prometheus, Loki, and Tempo. This stack provides unified monitoring for logs, traces, and metrics from your applications.
+
+I took [@MykalMachon's railway-grafana-stack](https://github.com/MykalMachon/railway-grafana-stack), and added an OTEL Collector to it because my project needed one and it made sense to keep in the same project repository, and then later on I exported it as a Railway Templace in case its useful for someone else. 
+
+If you decide to use this for serious projects or environments, please make sure to follow each service's guidelines on security practices.
+
+This whole stack was made to be deployed in a private network, without any public access in any of the services, therefore insecure TLS requests and http requests are allowed between services.
+
+Feel free to fork or create your own flavor of it!
 
 ## Quick Deploy
 
@@ -88,7 +96,7 @@ Each service includes a `railway.json` configuration file for easy deployment.
 
 ### Authentication
 
-1. **Grafana**: Set strong admin credentials via environment variables
+1. **Grafana**: There are admin credentials that are set via env vars.
    ```bash
    GF_SECURITY_ADMIN_USER=admin
    GF_SECURITY_ADMIN_PASSWORD=<use-railway-secrets>
