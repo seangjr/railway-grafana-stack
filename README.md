@@ -80,26 +80,9 @@ railway up
 
 ## Deployment
 
-### Railway (Recommended)
+### Railway
 
-Each service includes a `railway.json` configuration file for easy deployment:
-
-1. **Deploy OTEL Collector**:
-   ```bash
-   cd otel-collector
-   railway up
-   ```
-
-2. **Deploy Tempo, Loki, Prometheus**:
-   ```bash
-   railway up
-   ```
-
-3. **Deploy Grafana**:
-   ```bash
-   cd grafana
-   railway up
-   ```
+Each service includes a `railway.json` configuration file for easy deployment.
 
 ### Environment Variables
 
@@ -184,7 +167,7 @@ OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 ### Network Isolation
 
 1. **Internal services**: OTEL Collector, Prometheus, Loki, and Tempo should only be accessible via Railway's internal network (`.railway.internal`)
-2. **Public access**: Only Grafana should have a public URL
+2. **Public access**: Only Grafana should have a public URL, if needed
 3. **Application → OTEL**: Applications send telemetry using internal domains
 
 ### Authentication
