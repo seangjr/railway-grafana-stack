@@ -10,8 +10,8 @@ Deploy the entire observability stack to Railway with one click:
 
 Or manually deploy using the Railway CLI:
 ```bash
-git clone https://github.com/biancarosa/monitoring.git
-cd monitoring
+git clone https://github.com/biancarosa/railway-grafana-stack.git
+cd railway-grafana-stack
 railway up
 ```
 
@@ -237,7 +237,8 @@ OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 ## Configuration Files
 
 ```
-monitoring/
+railway-grafana-stack/
+├── railway.json              # Railway template for one-click deploy
 ├── otel-collector/
 │   ├── Dockerfile
 │   ├── otel-config.yaml      # OTLP receivers and exporters
