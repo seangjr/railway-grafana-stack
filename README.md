@@ -8,12 +8,6 @@ Deploy the entire observability stack to Railway with one click:
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/mPYvR2?referralCode=sWx4lg&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
-Or manually deploy using the Railway CLI:
-```bash
-git clone https://github.com/biancarosa/railway-grafana-stack.git
-cd railway-grafana-stack
-railway up
-```
 
 ## Architecture
 
