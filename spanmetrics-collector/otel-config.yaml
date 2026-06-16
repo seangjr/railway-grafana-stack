@@ -1,0 +1,70 @@
+# Isolated spanmetrics collector (Khaeli Observation).
+# Receives OTLP traces from the Ruby apps (docuseal, gallant web), forwards
+# them to Tempo, and derives RED metrics (calls/duration) via the spanmetrics
+# connector -> Prometheus, so Grafana can alert on request rate/errors/latency
+# for services whose language OTEL libs emit spans but not HTTP metrics.
+# Kept separate from the shared collector to avoid any blast radius on the
+# vexa/twenty pipeline.
+extensions:
+  bearertokenauth:
+    scheme: ""                      # senders pass the raw token in Authorization
+    token: ${env:OTLP_AUTH_TOKEN}
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+        auth:
+          authenticator: bearertokenauth
+      grpc:
+        endpoint: 0.0.0.0:4317
+        auth:
+          authenticator: bearertokenauth
+
+processors:
+  batch: {}
+  resource:
+    attributes:
+      - key: service
+        action: upsert
+        from_attribute: service.name
+
+connectors:
+  spanmetrics:
+    histogram:
+      unit: ms
+      explicit:
+        buckets: [5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s, 10s]
+    dimensions:
+      - name: http.method
+      - name: http.status_code
+      - name: http.route
+    dimensions_cache_size: 2000
+    metrics_flush_interval: 15s
+    exemplars:
+      enabled: false
+
+exporters:
+  otlp/tempo:
+    endpoint: ${env:TEMPO_ENDPOINT}
+    tls:
+      insecure: true
+  prometheusremotewrite:
+    endpoint: ${env:PROMETHEUS_ENDPOINT}
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  extensions: [bearertokenauth, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/tempo, spanmetrics]
+    metrics:
+      receivers: [spanmetrics]
+      processors: [batch, resource]
+      exporters: [prometheusremotewrite]
